@@ -17,9 +17,13 @@ const HomeScreen = (props: any) => {
     setTimeout(() => {
       setToast('This is a toast message', {
         position: ToastPosition.TOP,
+        styles: {
+          view: {backgroundColor: 'red'},
+          text: {color: 'white'},
+        },
       });
 
-      toggleBottomSheet(false, ['25%', '30%'], <Text>Hey There!</Text>);
+      // toggleBottomSheet(false, ['25%', '30%'], <Text>Hey There!</Text>);
       // toggleAppError(true, 'Error', 'This is an error message');
     }, 2000);
   }, []);

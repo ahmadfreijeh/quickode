@@ -2,10 +2,10 @@ import {createSlice} from '@reduxjs/toolkit';
 import {Actors} from '../../constants';
 
 const initialState = {
-  user: {
-    actor: Actors.MAIN,
-  },
-  // user: null,
+  // user: {
+  //   actor: Actors.MAIN,
+  // },
+  user: null,
   apiToken: null,
 };
 

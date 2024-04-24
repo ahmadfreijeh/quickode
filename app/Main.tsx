@@ -5,7 +5,7 @@ import {useSelector} from 'react-redux';
 
 import Navigator from './Navigator';
 import {SplashScreen, ForceUpdateScreen, ErrorScreen} from './screens';
-import {LoginScreen} from './screens/user/auth';
+import {LoginScreen, RegisterScreen} from './screens/user/auth';
 import {Actors} from './constants';
 
 const Stack = createNativeStackNavigator();
@@ -69,6 +69,7 @@ const Main: React.FC<MainProps> = props => {
       return (
         <Stack.Navigator>
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
+          <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
         </Stack.Navigator>
       );
     }

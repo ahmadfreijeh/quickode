@@ -21,7 +21,6 @@ export interface QuickodeContextInterface {
   setToast: (
     message?: string,
     options?: {
-      message?: string;
       duration?: number;
       position?: ToastPosition;
       icon?: string;
