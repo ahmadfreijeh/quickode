@@ -1,47 +1,93 @@
-import React from 'react';
-import Navigator from './Navigator';
-import {SplashScreen, ForceUpdateScreen} from './screens';
-import {LoginScreen} from './screens/user/auth';
-import {NavigationContainer} from '@react-navigation/native';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useSelector} from 'react-redux';
+
+import Navigator from './Navigator';
+import {SplashScreen, ForceUpdateScreen, ErrorScreen} from './screens';
+import {LoginScreen} from './screens/user/auth';
+import {Actors} from './constants';
+
 const Stack = createNativeStackNavigator();
 
-const Main = (props: any) => {
-  const {loaded, forceUpdate} = useSelector((state: {app: any}) => state.app);
-  const {user} = useSelector((state: {user: any}) => state.user);
+// Selector hooks for extracting state
+const useAppState = () => useSelector((state: {app: any}) => state.app);
+const useUserState = () => useSelector((state: {user: any}) => state.user);
 
-  return (
-    <NavigationContainer independent={true}>
-      {!loaded && (
+interface MainProps {}
+
+const navigationTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: 'white',
+    // text: 'red',
+    // border: 'green',
+    // card: 'blue',
+    // notification: 'orange',
+    // primary: 'rgb(255, 45, 85)',
+  },
+};
+
+const Main: React.FC<MainProps> = props => {
+  const {loaded, forceUpdate, error} = useAppState();
+  const {user} = useUserState();
+
+  useEffect(() => {
+    console.log('error', error);
+  }, [error]);
+
+  const renderContent = () => {
+    if (!loaded) {
+      return (
         <Stack.Navigator>
           <Stack.Screen name="SplashScreen" component={SplashScreen} />
         </Stack.Navigator>
-      )}
+      );
+    }
 
-      {loaded && forceUpdate.has_update && (
+    if (loaded && forceUpdate.has_update) {
+      return (
         <Stack.Navigator>
           <Stack.Screen
             name="ForceUpdateScreen"
             component={ForceUpdateScreen}
           />
         </Stack.Navigator>
-      )}
+      );
+    }
 
-      {loaded && user == null && !forceUpdate.has_update && (
+    if (loaded && error.has_error && !forceUpdate.has_update) {
+      return (
+        <Stack.Navigator>
+          <Stack.Screen name="ErrorScreen" component={ErrorScreen} />
+        </Stack.Navigator>
+      );
+    }
+
+    if (loaded && user === null && !forceUpdate.has_update) {
+      return (
         <Stack.Navigator>
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
         </Stack.Navigator>
-      )}
+      );
+    }
 
-      {loaded &&
-        user != null &&
-        (user?.actor == 'main' || !user.actor) &&
-        !forceUpdate.has_update && <Navigator />}
+    if (loaded && user?.actor === Actors.MAIN && !forceUpdate.has_update) {
+      return <Navigator />;
+    }
 
-      {/* {loaded && user != null && user.actor == 'other' && !forceUpdate.has_update && (
-        <NavigatorTwo {...props} />
-      )} */}
+    // Example for extending the logic, uncomment if needed
+    // if (loaded && user != null && user.actor === Actors.DRIVER && !forceUpdate.has_update) {
+    //   return <NavigatorTwo {...props} />;
+    // }
+
+    return null;
+  };
+
+  return (
+    <NavigationContainer independent={true} theme={navigationTheme}>
+      {renderContent()}
     </NavigationContainer>
   );
 };

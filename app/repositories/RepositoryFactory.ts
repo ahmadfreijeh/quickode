@@ -8,8 +8,8 @@ import {
 // import {AuthRepository as User2AuthRepository} from './user_2';
 
 const repositories = {
-  user: UserRepository,
   auth: AuthRepository,
+  user: UserRepository,
   app: AppRepository,
   notification: NotificationRepository,
 

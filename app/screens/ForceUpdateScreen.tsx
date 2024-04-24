@@ -1,109 +1,76 @@
-import React, {useEffect} from 'react';
-import {Colors} from '../constants/Colors';
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-  Platform,
-  Linking,
-} from 'react-native';
+import React, {useEffect, useCallback} from 'react';
+import {StyleSheet, View, Text, Platform, Linking} from 'react-native';
 import {useSelector} from 'react-redux';
-const ForceUpdateScreen = (props: any) => {
-  const {forceUpdate} = useSelector((state: {app: any}) => state.app);
+import {Colors} from '../constants';
+import {PLAY_STORE_LINK, APP_STORE_LINK} from '@env';
+import {QuickButton} from '../components';
+
+const appStoreLink = APP_STORE_LINK;
+const playStoreLink = PLAY_STORE_LINK;
+
+const ForceUpdateScreen = ({navigation}: any) => {
+  const {update_title, new_version, update_description} = useSelector(
+    state => state.app.forceUpdate,
+  );
 
   useEffect(() => {
-    props.navigation.setOptions({
+    navigation.setOptions({
       headerShown: false,
       headerShadowVisible: false,
     });
-  }, []);
+  }, [navigation]);
 
-  const openStore = async () => {
-    let link = '';
-    if (Platform.OS === 'ios') {
-      link = '';
-    }
+  const openStore = useCallback(() => {
+    const link = Platform.OS === 'ios' ? appStoreLink : playStoreLink;
+
     Linking.canOpenURL(link).then(
       supported => {
-        supported && Linking.openURL(link);
+        if (supported) {
+          Linking.openURL(link);
+        } else {
+          console.error('Cannot open URL:', link);
+        }
       },
-      err => console.error(err),
+      err => console.error('Failed to open URL:', err),
     );
-  };
+  }, []);
 
   return (
-    <View style={[styles.container]}>
-      <View>
-        <View>
-          <Text
-            style={{
-              fontSize: 18,
-              textAlign: 'left',
-            }}>
-            {forceUpdate.update_title}
-          </Text>
-        </View>
-        <View style={{paddingTop: 6}}>
-          <Text
-            style={{
-              fontSize: 16,
-              textAlign: 'left',
-              color: Colors.black,
-            }}>
-            {forceUpdate.new_version}
-          </Text>
-        </View>
+    <View style={styles.mainContainer}>
+      <Text style={styles.updateTitle}>{update_title}</Text>
+      <View style={styles.versionInfo}>
+        <Text style={styles.versionText}>{new_version}</Text>
       </View>
-
-      <View style={{paddingVertical: 18}}>
-        <Text
-          style={{
-            fontSize: 16,
-            textAlign: 'left',
-          }}>
-          {forceUpdate.update_description}
-        </Text>
-      </View>
-
-      <View>
-        <TouchableOpacity
-          onPress={() => openStore()}
-          style={[
-            styles.cardButton,
-            {
-              backgroundColor: Colors.black,
-            },
-          ]}>
-          <Text style={[styles.cardButtonText, {textAlign: 'center'}]}>
-            Update
-          </Text>
-        </TouchableOpacity>
-      </View>
+      <Text style={styles.descriptionText}>{update_description}</Text>
+      <QuickButton title="Update" onPress={openStore} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  mainContainer: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.white,
     paddingHorizontal: 16,
   },
-  backgroundImage: {
-    flex: 1,
-    resizeMode: 'cover',
-    alignItems: 'center',
-    justifyContent: 'center',
+  updateTitle: {
+    fontSize: 18,
+    textAlign: 'left',
+    fontWeight: 'bold',
   },
-  cardButton: {
-    borderRadius: 8,
-    paddingVertical: 16,
+  versionInfo: {
+    paddingTop: 6,
   },
-  cardButtonText: {
+  versionText: {
     fontSize: 16,
-    color: '#ffffff',
+    textAlign: 'left',
+    color: Colors.black,
+  },
+  descriptionText: {
+    fontSize: 16,
+    textAlign: 'left',
+    paddingVertical: 18,
   },
 });
 

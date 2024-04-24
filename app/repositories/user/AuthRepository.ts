@@ -1,16 +1,25 @@
+import {
+  LoginRequestInterface,
+  RegisterRequestInterface,
+} from '../../interfaces/http/request';
+
 import Repository from '../Repository';
 
 const source = '/auth';
 
-export default {
-  login(data: {email: any; password: any}) {
-    let body = {
-      email: data.email,
-      password: data.password,
-    };
-    return Repository.post(`${source}/login`, body);
-  },
-  logout(data: any) {
-    return Repository.post(`${source}/logout`, data);
-  },
+const register = async (body: RegisterRequestInterface): Promise<any> => {
+  const response = await Repository.post(`${source}/register`, body);
+  return response;
 };
+
+const login = async (body: LoginRequestInterface): Promise<any> => {
+  const response = await Repository.post(`${source}/login`, body);
+  return response;
+};
+
+const logout = async (data: any): Promise<any> => {
+  const response = await Repository.post(`${source}/logout`, data);
+  return response;
+};
+
+export default {register, login, logout};

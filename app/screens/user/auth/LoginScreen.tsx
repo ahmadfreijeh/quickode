@@ -1,46 +1,51 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Keyboard, Text} from 'react-native';
-import {RepositoryFactory} from '../../../repositories/RepositoryFactory';
-
-const authRepository = RepositoryFactory.get('auth');
+import {useLogin} from '../../../hooks/http/useAuthQuery';
+import {QuickButton} from '../../../components/widgets';
 
 const LoginScreen = (props: any) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const {
+    mutate: login,
+    isLoading: loginLoading,
+    data: loginData,
+    error: loginError,
+  } = useLogin();
+
   useEffect(() => {
     props.navigation.setOptions({
       headerShown: false,
       headerShadowVisible: false,
     });
-  }, []);
 
-  const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+    if (loginData) {
+      handleSavingLoginData(loginData);
+    }
+  }, [loginData]);
 
-  const login = () => {
-    setLoading(true);
+  const handleLogin = () => {
     Keyboard.dismiss();
-
-    let data = {
+    login({
       email: email,
       password: password,
-    };
+    });
+  };
 
-    authRepository
-      .sendOtp(data)
-      .then((res: any) => {
-        console.log('res', res);
-      })
-      .catch((err: any) => {
-        console.error('err', err);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+  const handleSavingLoginData = (data: Object) => {
+    try {
+      console.log('Login Data:', data);
+      //todo: handle saving login data to storage
+      //todo: navigate to home screen
+    } catch (error) {
+      console.log('Error saving login data:', error);
+    }
   };
 
   return (
     <>
-      <Text>Login Screen</Text>
+      <QuickButton title="Login" onPress={handleLogin} loading={loginLoading} />
     </>
   );
 };

@@ -13,6 +13,9 @@ import {Provider} from 'react-redux';
 import Main from './app/Main';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {QuickodeProvider} from './app/contexts/Quickode';
+import {Toasts} from '@backpackapp-io/react-native-toast';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 const App = (props: any) => {
   const queryClient = new QueryClient({
@@ -20,22 +23,27 @@ const App = (props: any) => {
   });
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Provider store={store}>
-        <QueryClientProvider client={queryClient}>
-          <GestureHandlerRootView style={styles.container}>
-            <StatusBar
-              animated={true}
-              backgroundColor="#5E8D48"
-              barStyle="dark-content"
-            />
-            <BottomSheetModalProvider>
-              <Main />
-            </BottomSheetModalProvider>
-          </GestureHandlerRootView>
-        </QueryClientProvider>
-      </Provider>
-    </SafeAreaView>
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container}>
+        <Provider store={store}>
+          <QueryClientProvider client={queryClient}>
+            <GestureHandlerRootView style={styles.container}>
+              <BottomSheetModalProvider>
+                <QuickodeProvider>
+                  <StatusBar
+                    animated={true}
+                    backgroundColor="#5E8D48"
+                    barStyle="dark-content"
+                  />
+                  <Toasts />
+                  <Main />
+                </QuickodeProvider>
+              </BottomSheetModalProvider>
+            </GestureHandlerRootView>
+          </QueryClientProvider>
+        </Provider>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 };
 
