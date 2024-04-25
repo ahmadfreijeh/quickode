@@ -6,9 +6,10 @@ import React, {
   useRef,
   useMemo,
   useCallback,
+  useEffect,
 } from 'react';
 
-import {ToastPosition, toast} from '@backpackapp-io/react-native-toast';
+import {ToastPosition, Toasts, toast} from '@backpackapp-io/react-native-toast';
 
 import {
   BottomSheetModal,
@@ -17,11 +18,13 @@ import {
 } from '@gorhom/bottom-sheet';
 
 import {QuickodeContextInterface} from '../interfaces/QuickodeContextInterface';
-import {Text} from 'react-native';
+import {StatusBar, Text, View, useWindowDimensions} from 'react-native';
 import {Colors} from '../constants';
 
 import {useDispatch} from 'react-redux';
 import {setAppError} from '../redux/slices/appSlice';
+
+import {useNetInfo} from '@react-native-community/netinfo';
 
 const QuickodeContext = createContext<QuickodeContextInterface>(
   {} as QuickodeContextInterface,
@@ -29,15 +32,22 @@ const QuickodeContext = createContext<QuickodeContextInterface>(
 
 function QuickodeProvider({children}: {children: ReactNode}) {
   const dispatch = useDispatch();
+  const {type, isConnected} = useNetInfo();
+  const {height: HEIGHT, width: WIDTH} = useWindowDimensions();
 
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
+  const [wifiConnected, setWifiConnected] = useState<boolean | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [bottomSheetSnapPoints, setBottomSheetSnapPoints] = useState<string[]>([
     '25%',
     '100%',
   ]);
+
+  useEffect(() => {
+    checkInternetConnection();
+  }, [isConnected]);
 
   const [bottomSheetChildren, setBottomSheetChildren] =
     useState<ReactNode>(null);
@@ -55,6 +65,19 @@ function QuickodeProvider({children}: {children: ReactNode}) {
     enableContentPanningGesture: boolean;
     enableHandlePanningGesture: boolean;
   });
+
+  const checkInternetConnection = () => {
+    if (isConnected === false && wifiConnected === null) {
+      setWifiConnected(false);
+    } else {
+      if (wifiConnected === null) return;
+
+      setWifiConnected(true);
+      setTimeout(() => {
+        setWifiConnected(null);
+      }, 3000);
+    }
+  };
 
   const setToast = (
     message = 'This is a toast message',
@@ -121,6 +144,46 @@ function QuickodeProvider({children}: {children: ReactNode}) {
     );
   };
 
+  const WifiConnection = useMemo(() => {
+    if (wifiConnected === false) {
+      return (
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            backgroundColor: Colors.black + '4D',
+            zIndex: 9999,
+            height: HEIGHT,
+          }}>
+          <Text
+            style={{
+              color: Colors.white,
+              textAlign: 'center',
+              fontSize: 16,
+              backgroundColor: Colors.red,
+            }}>
+            No Internet Connection
+          </Text>
+        </View>
+      );
+    } else if (wifiConnected === true) {
+      return (
+        <Text
+          style={{
+            color: Colors.white,
+            textAlign: 'center',
+            fontSize: 16,
+            backgroundColor: Colors.green,
+          }}>
+          Connected to the Internet
+        </Text>
+      );
+    }
+    return null;
+  }, [wifiConnected]);
+
   return (
     <QuickodeContext.Provider
       value={{
@@ -130,6 +193,13 @@ function QuickodeProvider({children}: {children: ReactNode}) {
         toggleBottomSheet,
         toggleAppError,
       }}>
+      <StatusBar
+        animated={true}
+        backgroundColor="#5E8D48"
+        barStyle="dark-content"
+      />
+      {WifiConnection}
+      <Toasts />
       {children}
       <BottomSheetModal
         ref={bottomSheetModalRef}

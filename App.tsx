@@ -30,12 +30,6 @@ const App = (props: any) => {
             <GestureHandlerRootView style={styles.container}>
               <BottomSheetModalProvider>
                 <QuickodeProvider>
-                  <StatusBar
-                    animated={true}
-                    backgroundColor="#5E8D48"
-                    barStyle="dark-content"
-                  />
-                  <Toasts />
                   <Main />
                 </QuickodeProvider>
               </BottomSheetModalProvider>

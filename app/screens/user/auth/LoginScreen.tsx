@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, Keyboard, Text} from 'react-native';
 import {useLogin} from '../../../hooks/http/useAuthQuery';
 import {QuickButton} from '../../../components/widgets';
+import {useQuickode} from '../../../contexts/Quickode';
 
 const LoginScreen = (props: any) => {
   const [email, setEmail] = useState('');
