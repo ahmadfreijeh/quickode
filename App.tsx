@@ -14,8 +14,9 @@ import Main from './app/Main';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {QuickodeProvider} from './app/contexts/Quickode';
-import {Toasts} from '@backpackapp-io/react-native-toast';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {I18nextProvider} from 'react-i18next';
+import i18n from './app/i18n';
 
 const App = (props: any) => {
   const queryClient = new QueryClient({
@@ -26,15 +27,17 @@ const App = (props: any) => {
     <SafeAreaProvider>
       <SafeAreaView style={styles.container}>
         <Provider store={store}>
-          <QueryClientProvider client={queryClient}>
-            <GestureHandlerRootView style={styles.container}>
-              <BottomSheetModalProvider>
-                <QuickodeProvider>
-                  <Main />
-                </QuickodeProvider>
-              </BottomSheetModalProvider>
-            </GestureHandlerRootView>
-          </QueryClientProvider>
+          <I18nextProvider i18n={i18n}>
+            <QueryClientProvider client={queryClient}>
+              <GestureHandlerRootView style={styles.container}>
+                <BottomSheetModalProvider>
+                  <QuickodeProvider>
+                    <Main />
+                  </QuickodeProvider>
+                </BottomSheetModalProvider>
+              </GestureHandlerRootView>
+            </QueryClientProvider>
+          </I18nextProvider>
         </Provider>
       </SafeAreaView>
     </SafeAreaProvider>

@@ -32,4 +32,5 @@ export interface QuickodeContextInterface {
       };
     },
   ) => void;
+  toggleLanguage: (language: string) => void;
 }

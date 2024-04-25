@@ -25,6 +25,8 @@ import {useDispatch} from 'react-redux';
 import {setAppError} from '../redux/slices/appSlice';
 
 import {useNetInfo} from '@react-native-community/netinfo';
+import {changeLanguage} from 'i18next';
+import RNRestart from 'react-native-restart';
 
 const QuickodeContext = createContext<QuickodeContextInterface>(
   {} as QuickodeContextInterface,
@@ -41,8 +43,8 @@ function QuickodeProvider({children}: {children: ReactNode}) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [bottomSheetSnapPoints, setBottomSheetSnapPoints] = useState<string[]>([
-    '25%',
-    '100%',
+    '1%',
+    '35%',
   ]);
 
   useEffect(() => {
@@ -114,7 +116,7 @@ function QuickodeProvider({children}: {children: ReactNode}) {
     children?: ReactNode,
     bottomSheetProps?: Object,
   ) => {
-    setBottomSheetSnapPoints(snapPoints || ['25%', '100%']);
+    setBottomSheetSnapPoints(snapPoints || ['1%', '35%']);
     setBottomSheetChildren(
       children || (
         <Text style={{textAlign: 'center'}}>Bottom Sheet Content</Text>
@@ -142,6 +144,11 @@ function QuickodeProvider({children}: {children: ReactNode}) {
         description: description,
       }),
     );
+  };
+
+  const toggleLanguage = (language: string) => {
+    changeLanguage(language);
+    RNRestart.restart();
   };
 
   const WifiConnection = useMemo(() => {
@@ -192,6 +199,7 @@ function QuickodeProvider({children}: {children: ReactNode}) {
         setToast,
         toggleBottomSheet,
         toggleAppError,
+        toggleLanguage,
       }}>
       <StatusBar
         animated={true}
@@ -205,12 +213,7 @@ function QuickodeProvider({children}: {children: ReactNode}) {
         ref={bottomSheetModalRef}
         index={1}
         snapPoints={bottomSheetSnapPoints}
-        enableDismissOnClose={bottomSheetProps.enableDismissOnClose}
-        enableContentPanningGesture={
-          bottomSheetProps.enableContentPanningGesture
-        }
-        enableHandlePanningGesture={bottomSheetProps.enableHandlePanningGesture}
-        enableOverDrag={false}
+        {...bottomSheetProps}
         onChange={handleSheetChanges}>
         <BottomSheetView
           style={{
