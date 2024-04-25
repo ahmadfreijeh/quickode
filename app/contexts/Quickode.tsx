@@ -25,7 +25,7 @@ import {useDispatch} from 'react-redux';
 import {setAppError} from '../redux/slices/appSlice';
 
 import {useNetInfo} from '@react-native-community/netinfo';
-import {changeLanguage} from 'i18next';
+import {changeLanguage, t} from 'i18next';
 import RNRestart from 'react-native-restart';
 
 const QuickodeContext = createContext<QuickodeContextInterface>(
@@ -171,7 +171,7 @@ function QuickodeProvider({children}: {children: ReactNode}) {
               fontSize: 16,
               backgroundColor: Colors.red,
             }}>
-            No Internet Connection
+            {t('no_internet_connection')}
           </Text>
         </View>
       );
@@ -184,7 +184,7 @@ function QuickodeProvider({children}: {children: ReactNode}) {
             fontSize: 16,
             backgroundColor: Colors.green,
           }}>
-          Connected to the Internet
+          {t('connected_to_the_internet')}
         </Text>
       );
     }
