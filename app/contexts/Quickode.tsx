@@ -134,7 +134,7 @@ function QuickodeProvider({children}: {children: ReactNode}) {
 
   const toggleAppError = (
     isVisible: boolean,
-    title: string,
+    title?: string,
     description?: string,
   ) => {
     dispatch(

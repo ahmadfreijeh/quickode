@@ -3,6 +3,7 @@ import {StyleSheet, Keyboard, Text, I18nManager} from 'react-native';
 import {useLogin} from '../../../hooks/http/useAuthQuery';
 import {QuickButton} from '../../../components/widgets';
 import {t} from 'i18next';
+import {useQuickode} from '../../../contexts/Quickode';
 
 const LoginScreen = (props: any) => {
   const [email, setEmail] = useState('');

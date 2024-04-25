@@ -5,7 +5,7 @@ export interface QuickodeContextInterface {
   isAuthenticated: boolean;
   toggleAppError: (
     isVisible: boolean,
-    title: string,
+    title?: string,
     description?: string,
   ) => void;
   toggleBottomSheet: (

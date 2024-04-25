@@ -4,8 +4,8 @@ const initialState = {
   loaded: false,
   error: {
     has_error: false,
-    error_title: 'Error',
-    error_description:
+    title: 'Error',
+    description:
       'Oops! Something went wrong. Please try again later or contact support.',
   },
   forceUpdate: {
@@ -32,13 +32,13 @@ export const appSlice = createSlice({
         ? false
         : action.payload.has_error;
 
-      state.error.error_title = !action.payload.error_title
-        ? initialState.error.error_title
-        : action.payload.error_title;
+      state.error.title = !action.payload.title
+        ? initialState.error.title
+        : action.payload.title;
 
-      state.error.error_description = !action.payload.error_description
-        ? initialState.error.error_description
-        : action.payload.error_description;
+      state.error.description = !action.payload.description
+        ? initialState.error.description
+        : action.payload.description;
     },
   },
 });

@@ -16,7 +16,7 @@ const ErrorScreen = ({props}: any) => {
             textAlign: 'center',
             color: Colors.primary,
           }}>
-          {error.error_title}
+          {error.title}
         </Text>
         <Text
           style={{
@@ -24,7 +24,7 @@ const ErrorScreen = ({props}: any) => {
             textAlign: 'center',
             color: Colors.secondary,
           }}>
-          {error.error_description}
+          {error.description}
         </Text>
       </View>
     </>
